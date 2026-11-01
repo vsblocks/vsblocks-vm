@@ -242,7 +242,8 @@ const defaultBuiltinExtensions = {
     // fr3d:
     fr3d: () => require('../extensions/fr_3d'),
 
-    vsloremipsum: () => require('../extensions/vs_loremipsum')
+    vsloremipsum: () => require('../extensions/vs_loremipsum'),
+    vsencryption: () => require('../extensions/vs_encryption')
 };
 const CORE_EXTENSIONS = [
     'argument',
