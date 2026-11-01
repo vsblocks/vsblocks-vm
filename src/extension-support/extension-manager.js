@@ -265,6 +265,7 @@ const preload = [];
 
 if (IsLocal || IsLiveTests) {
     preload.push("jgDev");
+    preload.push("jgRuntime");
 }
 
 /**
