@@ -25,7 +25,7 @@ class jwEncryption {
         this.lastError = '';
 
         this.textEncoder = new TextEncoder();
-        this.textDecoder = new TextDecoder('utf-8', {fatal: true});
+        this.textDecoder = new TextDecoder('utf-8', { fatal: true });
     }
 
     /**
@@ -36,9 +36,9 @@ class jwEncryption {
             autoLoad: true,
             id: 'jwEncryption',
             name: 'Encryption Tools',
-            color1: '#ffdc7a',
-            color2: '#ffd45e',
-            color3: '#e6b93f',
+            color1: "#6c5ce7",
+            color2: "#5849c9",
+            color3: "#4a3db3",
             blocks: [
                 {
                     blockType: BlockType.LABEL,
@@ -585,21 +585,21 @@ class jwEncryption {
 
     _encodeBytes(bytes, encoding) {
         switch (encoding) {
-        case 'hex': return this._bytesToHex(bytes);
-        case 'binary': return this._bytesToBinary(bytes);
-        case 'base64url': return this._toBase64Url(this._bytesToBase64(bytes));
-        case 'base64':
-        default: return this._bytesToBase64(bytes);
+            case 'hex': return this._bytesToHex(bytes);
+            case 'binary': return this._bytesToBinary(bytes);
+            case 'base64url': return this._toBase64Url(this._bytesToBase64(bytes));
+            case 'base64':
+            default: return this._bytesToBase64(bytes);
         }
     }
 
     _decodeToBytes(text, encoding) {
         switch (encoding) {
-        case 'hex': return this._hexToBytes(text);
-        case 'binary': return this._binaryToBytes(text);
-        case 'base64url':
-        case 'base64':
-        default: return this._base64ToBytes(text);
+            case 'hex': return this._hexToBytes(text);
+            case 'binary': return this._binaryToBytes(text);
+            case 'base64url':
+            case 'base64':
+            default: return this._base64ToBytes(text);
         }
     }
 
@@ -631,7 +631,7 @@ class jwEncryption {
                 hash: 'SHA-256'
             },
             baseKey,
-            {name: 'AES-GCM', length: 256},
+            { name: 'AES-GCM', length: 256 },
             false,
             ['encrypt', 'decrypt']
         );
@@ -640,11 +640,11 @@ class jwEncryption {
     _normalizeHash(algorithm) {
         const algo = String(algorithm).toUpperCase().replace(/[^A-Z0-9]/g, '');
         switch (algo) {
-        case 'SHA1': return 'SHA-1';
-        case 'SHA256': return 'SHA-256';
-        case 'SHA384': return 'SHA-384';
-        case 'SHA512': return 'SHA-512';
-        default: return null;
+            case 'SHA1': return 'SHA-1';
+            case 'SHA256': return 'SHA-256';
+            case 'SHA384': return 'SHA-384';
+            case 'SHA512': return 'SHA-512';
+            default: return null;
         }
     }
 
@@ -669,12 +669,12 @@ class jwEncryption {
         const numbers = '0123456789';
         const symbols = '!@#$%^&*()-_=+[]{};:,.<>?/~';
         switch (String(name).toLowerCase()) {
-        case 'letters': return letters;
-        case 'numbers': return numbers;
-        case 'hex': return '0123456789abcdef';
-        case 'letters, numbers and symbols': return letters + numbers + symbols;
-        case 'letters and numbers':
-        default: return letters + numbers;
+            case 'letters': return letters;
+            case 'numbers': return numbers;
+            case 'hex': return '0123456789abcdef';
+            case 'letters, numbers and symbols': return letters + numbers + symbols;
+            case 'letters and numbers':
+            default: return letters + numbers;
         }
     }
 
@@ -748,7 +748,7 @@ class jwEncryption {
             const iv = crypto.getRandomValues(new Uint8Array(12));
             const key = await this._deriveAesKey(password, salt);
             const cipher = new Uint8Array(await subtle.encrypt(
-                {name: 'AES-GCM', iv: iv},
+                { name: 'AES-GCM', iv: iv },
                 key,
                 this.textEncoder.encode(String(args.TEXT))
             ));
@@ -776,7 +776,7 @@ class jwEncryption {
             const iv = packed.slice(16, 28);
             const cipher = packed.slice(28);
             const key = await this._deriveAesKey(password, salt);
-            const plain = await subtle.decrypt({name: 'AES-GCM', iv: iv}, key, cipher);
+            const plain = await subtle.decrypt({ name: 'AES-GCM', iv: iv }, key, cipher);
             return this.textDecoder.decode(plain);
         } catch (e) {
             return this._fail('Decryption failed (wrong password or corrupted data).');
@@ -809,7 +809,7 @@ class jwEncryption {
             const key = await subtle.importKey(
                 'raw',
                 this.textEncoder.encode(String(args.KEY)),
-                {name: 'HMAC', hash: algo},
+                { name: 'HMAC', hash: algo },
                 false,
                 ['sign']
             );
