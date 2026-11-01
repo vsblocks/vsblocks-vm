@@ -263,9 +263,10 @@ const coreExtensionList = Object.getOwnPropertyNames(defaultBuiltinExtensions);
 
 const preload = [];
 
+preload.push("jgRuntime");
+
 if (IsLocal || IsLiveTests) {
     preload.push("jgDev");
-    preload.push("jgRuntime");
 }
 
 /**
