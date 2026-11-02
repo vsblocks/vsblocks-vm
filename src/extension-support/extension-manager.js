@@ -243,7 +243,8 @@ const defaultBuiltinExtensions = {
     fr3d: () => require('../extensions/fr_3d'),
 
     vsloremipsum: () => require('../extensions/vs_loremipsum'),
-    vsencryption: () => require('../extensions/vs_encryption')
+    vsencryption: () => require('../extensions/vs_encryption'),
+    vspython: () => require('../extensions/vs_python')
 };
 const CORE_EXTENSIONS = [
     'argument',
@@ -265,6 +266,7 @@ const coreExtensionList = Object.getOwnPropertyNames(defaultBuiltinExtensions);
 const preload = [];
 
 preload.push("jgRuntime");
+preload.push("vsencryption");
 
 if (IsLocal || IsLiveTests) {
     preload.push("jgDev");
