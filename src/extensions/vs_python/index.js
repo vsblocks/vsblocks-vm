@@ -2,21 +2,10 @@ const formatMessage = require('format-message');
 const BlockType = require('../../extension-support/block-type');
 const ArgumentType = require('../../extension-support/argument-type');
 
-/**
- * Python for PenguinMod, powered by Pyodide (real CPython compiled to WebAssembly).
- *
- * - Runs inside a Web Worker, so infinite loops never freeze the editor.
- * - Supports a run-time limit and a "stop Python" block.
- * - Auto-loads packages that are imported (numpy, pandas, etc.) and can install
- *   pure-Python packages from PyPI with micropip.
- */
-
 const PYODIDE_VERSION = '0.26.4';
 const PYODIDE_URL = `https://cdn.jsdelivr.net/pyodide/v${PYODIDE_VERSION}/full/`;
 
-/**
- * Python helpers that are loaded into every fresh namespace.
- */
+
 const PY_HELPERS = String.raw`
 import json
 import inspect
@@ -58,10 +47,6 @@ async def __jw_call(name, args_json):
     return __jw_fmt(result)
 `;
 
-/**
- * Source of the Web Worker (kept as a string so it can be loaded from a Blob).
- * IMPORTANT: no backticks or dollar-brace sequences inside this string.
- */
 const WORKER_SOURCE = String.raw`
 let pyodide = null;
 let ns = null;
@@ -138,7 +123,7 @@ async function handle(msg) {
             try {
                 await pyodide.loadPackagesFromImports(msg.code);
             } catch (e) {
-                // Ignore: a real import error will be reported by the code itself.
+                
             }
             const value = await pyodide.runPythonAsync(msg.code, {globals: ns});
             if (value === undefined) return '';
@@ -258,13 +243,13 @@ class vsPython {
         this.lastError = '';
         this.lastTraceback = '';
 
-        // Stop a running script when the red stop button is pressed.
+      
         try {
             this.runtime.on('PROJECT_STOP_ALL', () => {
                 if (this.activeRuns > 0) this._terminate('Stopped by user.');
             });
         } catch (e) {
-            // Older runtimes may not support this event.
+          
         }
     }
 
@@ -276,11 +261,10 @@ class vsPython {
             autoLoad: true,
             id: 'python',
             name: 'Python',
-            color1: '#3776ab',
-            color2: '#2b5b84',
-            color3: '#ffd43b',
+            color1: "#6c5ce7",
+            color2: "#5849c9",
+            color3: "#4a3db3",
             blocks: [
-                // ---------- Setup ----------
                 {
                     blockType: BlockType.LABEL,
                     text: 'Setup'
@@ -342,25 +326,9 @@ class vsPython {
 
                 '---',
 
-                // ---------- Running code ----------
                 {
                     blockType: BlockType.LABEL,
                     text: 'Run code'
-                },
-                {
-                    opcode: 'runCode',
-                    text: formatMessage({
-                        id: 'python.blocks.runCode',
-                        default: 'run Python [CODE]',
-                        description: 'Run Python code'
-                    }),
-                    blockType: BlockType.COMMAND,
-                    arguments: {
-                        CODE: {
-                            type: ArgumentType.STRING,
-                            defaultValue: 'print("Hello from Python!")'
-                        }
-                    }
                 },
                 {
                     opcode: 'runCodeOutput',
@@ -443,7 +411,6 @@ class vsPython {
 
                 '---',
 
-                // ---------- Variables ----------
                 {
                     blockType: BlockType.LABEL,
                     text: 'Variables'
@@ -515,7 +482,6 @@ class vsPython {
 
                 '---',
 
-                // ---------- Results ----------
                 {
                     blockType: BlockType.LABEL,
                     text: 'Results'
@@ -581,8 +547,6 @@ class vsPython {
                 },
 
                 '---',
-
-                // ---------- Control ----------
                 {
                     blockType: BlockType.LABEL,
                     text: 'Control'
@@ -640,10 +604,6 @@ class vsPython {
             }
         };
     }
-
-    // ------------------------------------------------------------------
-    // Worker management
-    // ------------------------------------------------------------------
 
     _spawn() {
         const blob = new Blob([WORKER_SOURCE], {type: 'application/javascript'});
@@ -718,11 +678,6 @@ class vsPython {
             });
         return this.readyPromise;
     }
-
-    // ------------------------------------------------------------------
-    // Task helpers
-    // ------------------------------------------------------------------
-
     _cleanTraceback(text) {
         const lines = String(text).split('\n');
         const out = [];
@@ -791,10 +746,6 @@ class vsPython {
         this.runtime.startHats('python_whenError');
     }
 
-    // ------------------------------------------------------------------
-    // Setup blocks
-    // ------------------------------------------------------------------
-
     async loadPython() {
         try {
             await this._ensureReady();
@@ -822,14 +773,6 @@ class vsPython {
             return;
         }
         await this._runTask('install', {pkg}, false);
-    }
-
-    // ------------------------------------------------------------------
-    // Run blocks
-    // ------------------------------------------------------------------
-
-    async runCode(args) {
-        await this._runTask('run', {code: String(args.CODE)}, true);
     }
 
     async runCodeOutput(args) {
@@ -868,10 +811,6 @@ class vsPython {
         return '    '.repeat(levels);
     }
 
-    // ------------------------------------------------------------------
-    // Variable blocks
-    // ------------------------------------------------------------------
-
     async setVariable(args) {
         const name = String(args.NAME).trim();
         if (!this._validName(name)) {
@@ -909,11 +848,6 @@ class vsPython {
         if (!this.ready) return;
         await this._runTask('reset', {}, false);
     }
-
-    // ------------------------------------------------------------------
-    // Result blocks
-    // ------------------------------------------------------------------
-
     getOutput() {
         return this.lastOutput;
     }
@@ -941,10 +875,6 @@ class vsPython {
         this.lastError = '';
         this.lastTraceback = '';
     }
-
-    // ------------------------------------------------------------------
-    // Control blocks
-    // ------------------------------------------------------------------
 
     setTimeLimit(args) {
         const seconds = Number(args.SECONDS);
