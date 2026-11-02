@@ -383,16 +383,6 @@ class vsPython {
                     }
                 },
                 {
-                    opcode: 'newLine',
-                    text: formatMessage({
-                        id: 'python.blocks.newLine',
-                        default: 'new line',
-                        description: 'A line break, for writing multi-line code'
-                    }),
-                    disableMonitor: true,
-                    blockType: BlockType.REPORTER
-                },
-                {
                     opcode: 'indent',
                     text: formatMessage({
                         id: 'python.blocks.indent',
@@ -802,9 +792,6 @@ class vsPython {
         return reply.ok ? (reply.result || '') : '';
     }
 
-    newLine() {
-        return '\n';
-    }
 
     indent(args) {
         const levels = Math.max(0, Math.min(50, Math.trunc(Number(args.LEVELS)) || 0));
